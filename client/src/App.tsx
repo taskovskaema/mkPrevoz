@@ -3,6 +3,7 @@ import { getTrips } from "./api";
 import type { Trip } from "./types";
 import { TripCard } from "./components/TripCard";
 import { PublishTripForm } from "./components/PublishingTripForm";
+import { TripFilters } from "./components/TripFilters";
 import "./App.css";
 
 type View = "trips" | "publish";
@@ -12,6 +13,16 @@ function App() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [fromFilter, setFromFilter] = useState("");
+  const [toFilter, setToFilter] = useState("");
+
+  // Derived from state: recalculated on every render, never stored separately
+  const visibleTrips = trips.filter(
+    (trip) =>
+      (!fromFilter || trip.fromCity === fromFilter) &&
+      (!toFilter || trip.toCity === toFilter)
+  );
 
   async function loadTrips() {
     try {
@@ -35,40 +46,35 @@ function App() {
   }
 
   return (
-    <div className="page">
-      <header className="header">
-        <h1>mkPrevoz</h1>
-        <p className="muted">Intercity rides across North Macedonia. Reserve your seat in advance.</p>
-        <nav className="tabs">
-          <button className={view === "trips" ? "tab active" : "tab"} onClick={() => setView("trips")}>
-            Find a ride
-          </button>
-          <button className={view === "publish" ? "tab active" : "tab"} onClick={() => setView("publish")}>
-            Offer a ride
-          </button>
-        </nav>
-      </header>
+              <>
+            <TripFilters
+              from={fromFilter}
+              to={toFilter}
+              onFromChange={setFromFilter}
+              onToChange={setToFilter}
+            />
 
-      <main>
-        {view === "publish" ? (
-          <PublishTripForm onPublished={handlePublished} />
-        ) : (
-          <>
-            <h2>Upcoming trips</h2>
+            <h2>
+              Upcoming trips{" "}
+              {!loading && !error && <span className="count">{visibleTrips.length}</span>}
+            </h2>
+
             {loading && <p className="muted">Loading trips…</p>}
             {error && <p className="error">{error}</p>}
-            {!loading && !error && trips.length === 0 && (
-              <p className="muted">No upcoming trips yet. Be the first to offer a ride!</p>
+
+            {!loading && !error && visibleTrips.length === 0 && (
+              <div className="empty">
+                <p>No trips found{fromFilter || toFilter ? " for this route" : " yet"}.</p>
+                <button onClick={() => setView("publish")}>Offer a ride</button>
+              </div>
             )}
+
             <div className="trip-list">
-              {trips.map((trip) => (
+              {visibleTrips.map((trip) => (
                 <TripCard key={trip.id} trip={trip} onBooked={loadTrips} />
               ))}
             </div>
           </>
-        )}
-      </main>
-    </div>
   );
 }
 

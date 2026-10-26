@@ -36,6 +36,10 @@ export function PublishTripForm({ onPublished }: PublishTripFormProps) {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
+  function swapCities() {
+    setForm((prev) => ({ ...prev, fromCity: prev.toCity, toCity: prev.fromCity }));
+  }
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); // stop the browser from reloading the page
 
@@ -76,18 +80,21 @@ export function PublishTripForm({ onPublished }: PublishTripFormProps) {
       </label>
 
       <div className="row">
+              <div className="row cities">
         <label>
           From
           <select name="fromCity" value={form.fromCity} onChange={handleChange}>
             {CITIES.map((city) => <option key={city}>{city}</option>)}
           </select>
         </label>
+        <button type="button" className="swap" onClick={swapCities} aria-label="Swap cities">⇄</button>
         <label>
           To
           <select name="toCity" value={form.toCity} onChange={handleChange}>
             {CITIES.map((city) => <option key={city}>{city}</option>)}
           </select>
         </label>
+      </div>
       </div>
 
       <div className="row">
