@@ -43,3 +43,31 @@ button {
   cursor: pointer;
 }
 button:disabled { background: #9ca3af; cursor: not-allowed; }
+
+/* Tabs */
+.tabs { display: flex; gap: 8px; margin-top: 16px; }
+.tab { background: white; color: #1f2933; border: 1px solid #e5e7eb; }
+.tab.active { background: #c8102e; color: white; border-color: #c8102e; }
+
+/* Forms */
+.card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
+.form { display: grid; gap: 14px; }
+.form h2 { margin: 0; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row label { flex: 1; min-width: 140px; }
+label { display: grid; gap: 4px; font-size: 0.9rem; font-weight: 500; }
+input, select {
+  padding: 9px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font: inherit;
+  background: white;
+}
+input:focus, select:focus { outline: 2px solid #c8102e33; border-color: #c8102e; }
+
+/* Booking inside a card  */
+.booking-form { display: grid; gap: 10px; border-top: 1px dashed #e5e7eb; padding-top: 12px; margin-top: 6px; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+button.secondary { background: white; color: #1f2933; border: 1px solid #d1d5db; }
+
+.success { color: #166534; background: #dcfce7; padding: 10px 12px; border-radius: 8px; margin: 6px 0 0; }
