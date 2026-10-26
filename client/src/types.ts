@@ -4,7 +4,7 @@ export interface Trip {
   driverName: string;
   fromCity: string;
   toCity: string;
-  departureAt: string; // dates arrive as ISO strings in JSON
+  departureAt: string; 
   durationMin: number;
   totalSeats: number;
   priceMkd: number;
