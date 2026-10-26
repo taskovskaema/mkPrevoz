@@ -1,4 +1,4 @@
-import type { Booking, NewBooking, NewTrip, Trip } from "./types";
+import type { BookingResult, NewBooking, NewTrip, Trip } from "./types";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
 
@@ -28,7 +28,7 @@ export function createTrip(input: NewTrip) {
 }
 
 export function bookSeat(tripId: number, input: NewBooking) {
-  return request<Booking>(`/trips/${tripId}/bookings`, {
+  return request<BookingResult>(`/trips/${tripId}/bookings`, {
     method: "POST",
     body: JSON.stringify(input),
   });

@@ -19,8 +19,8 @@ export function BookingForm({ trip, onSuccess, onCancel }: BookingFormProps) {
     setError(null);
     setSubmitting(true);
     try {
-      const booking = await bookSeat(trip.id, { passengerName, email });
-      onSuccess(`Seat reserved for ${booking.passengerName}! Have a great trip to ${trip.toCity}.`);
+      const result = await bookSeat(trip.id, { passengerName, email });
+      onSuccess(result.message);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Booking failed.");
     } finally {

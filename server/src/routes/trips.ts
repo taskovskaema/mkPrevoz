@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { prisma } from "../db";
 import { HttpError } from "../errors";
+import { generateConfirmation } from "../ai";
 
 export const tripsRouter = Router();
 
@@ -65,6 +66,8 @@ tripsRouter.post("/", async (req, res) => {
 });
 
 
+
+// A passenger reserves one seat, then gets an AI-written confirmation - gemini
 tripsRouter.post("/:id/bookings", async (req, res) => {
   const tripId = Number(req.params.id);
   if (!Number.isInteger(tripId)) throw new HttpError(400, "Invalid trip id");
@@ -73,9 +76,9 @@ tripsRouter.post("/:id/bookings", async (req, res) => {
   if (!result.success) throw validationError(result.error);
   const { passengerName, email } = result.data;
 
+  let booked;
   try {
-    const booking = await prisma.$transaction(async (tx) => {
-      //no double booking
+    booked = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT id FROM "Trip" WHERE id = ${tripId} FOR UPDATE`;
 
       const trip = await tx.trip.findUnique({
@@ -87,15 +90,24 @@ tripsRouter.post("/:id/bookings", async (req, res) => {
       if (trip.departureAt < new Date()) throw new HttpError(400, "This trip has already left");
       if (trip._count.bookings >= trip.totalSeats) throw new HttpError(409, "Sorry, this trip is full");
 
-      return tx.booking.create({ data: { tripId, passengerName, email } });
+      const booking = await tx.booking.create({ data: { tripId, passengerName, email } });
+      return { booking, trip };
     });
-
-    res.status(201).json(booking);
   } catch (err) {
-    //same email booking - 409 conflict
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
       throw new HttpError(409, "This email already has a seat on this trip");
     }
     throw err;
   }
+
+  const message = await generateConfirmation({
+    passengerName,
+    driverName: booked.trip.driverName,
+    fromCity: booked.trip.fromCity,
+    toCity: booked.trip.toCity,
+    departureAt: booked.trip.departureAt,
+    priceMkd: booked.trip.priceMkd,
+  });
+
+  res.status(201).json({ booking: booked.booking, message });
 });

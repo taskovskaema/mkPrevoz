@@ -27,3 +27,8 @@ export interface Booking {
   email: string;
   createdAt: string;
 }
+
+export interface BookingResult {
+  booking: Booking;
+  message: string;
+}
