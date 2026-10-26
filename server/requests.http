@@ -1,0 +1,40 @@
+# ###PROBA
+# @api = http://localhost:3000/api
+
+# ### Health check
+# GET {{api}}/health
+
+# ### List trips
+# GET {{api}}/trips
+
+# ### Publish a trip
+# POST {{api}}/trips
+# Content-Type: application/json
+
+# {
+#   "driverName": "Marko",
+#   "fromCity": "Skopje",
+#   "toCity": "Ohrid",
+#   "departureAt": "2026-10-31T08:00:00+01:00",
+#   "durationMin": 180,
+#   "totalSeats": 1,
+#   "priceMkd": 500
+# }
+
+# ### Book a seat (change the 1 to your trip's id)
+# POST {{api}}/trips/2/bookings
+# Content-Type: application/json
+
+# {
+#   "passengerName": "Ana",
+#   "email": "ana@example.com"
+# }
+
+# ### Second person tries the same 1-seat trip -> should get 409 "full"
+# POST {{api}}/trips/2/bookings
+# Content-Type: application/json
+
+# {
+#   "passengerName": "Petar",
+#   "email": "petar@example.com"
+# }
