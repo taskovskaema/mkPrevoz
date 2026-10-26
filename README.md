@@ -54,7 +54,7 @@ So I adapted the scheduling challenge to this. Instead of a host publishing meet
 **Requirements:** Node.js 20+, a PostgreSQL database (e.g. a free [Neon](https://neon.tech) project), and optionally a [Gemini API key](https://aistudio.google.com).
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/mkPrevoz.git
+git clone https://github.com/taskovskaema/mkPrevoz
 cd mkPrevoz
 ```
 
@@ -87,8 +87,6 @@ Without a Gemini key the app still works and uses a standard confirmation messag
 | POST | `/api/trips/:id/bookings` | Book a seat → `{ booking, message }` |
 
 Example requests are in [`server/requests.http`](server/requests.http).
-
-## How I used AI tools
 
 ## How I used AI tools
 
