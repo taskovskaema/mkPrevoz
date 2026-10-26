@@ -13,11 +13,9 @@ function App() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [fromFilter, setFromFilter] = useState("");
   const [toFilter, setToFilter] = useState("");
 
-  // Derived from state: recalculated on every render, never stored separately
   const visibleTrips = trips.filter(
     (trip) =>
       (!fromFilter || trip.fromCity === fromFilter) &&
@@ -46,7 +44,25 @@ function App() {
   }
 
   return (
-              <>
+    <div className="page">
+      <header className="header">
+        <h1>mkPrevoz</h1>
+        <p className="muted">Intercity rides across North Macedonia. Reserve your seat in advance.</p>
+        <nav className="tabs">
+          <button className={view === "trips" ? "tab active" : "tab"} onClick={() => setView("trips")}>
+            Find a ride
+          </button>
+          <button className={view === "publish" ? "tab active" : "tab"} onClick={() => setView("publish")}>
+            Offer a ride
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        {view === "publish" ? (
+          <PublishTripForm onPublished={handlePublished} />
+        ) : (
+          <>
             <TripFilters
               from={fromFilter}
               to={toFilter}
@@ -59,7 +75,9 @@ function App() {
               {!loading && !error && <span className="count">{visibleTrips.length}</span>}
             </h2>
 
-            {loading && <p className="muted">Loading trips…</p>}
+            {loading && (
+              <p className="muted">Loading trips… The free server may need up to a minute to wake up.</p>
+            )}
             {error && <p className="error">{error}</p>}
 
             {!loading && !error && visibleTrips.length === 0 && (
@@ -75,6 +93,9 @@ function App() {
               ))}
             </div>
           </>
+        )}
+      </main>
+    </div>
   );
 }
 
